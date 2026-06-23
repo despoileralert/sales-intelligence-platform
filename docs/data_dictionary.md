@@ -22,6 +22,8 @@ Source data location: `data/raw`
 
 File: `data/raw/olist_customers_dataset.csv`
 
+Description: This dataset has information about the customer and its location. Use it to identify unique customers in the orders dataset and to find the orders delivery location. At our system each order is assigned to a unique customer_id. This means that the same customer will get different ids for different orders. The purpose of having a customer_unique_id on the dataset is to allow you to identify customers that made repurchases at the store. Otherwise you would find that each order had a different customer associated with.
+
 Grain: one row per customer record associated with an order.
 
 | Column | Type | Description | Nullable | Key / Usage |
@@ -35,6 +37,8 @@ Grain: one row per customer record associated with an order.
 ## Geolocation
 
 File: `data/raw/olist_geolocation_dataset.csv`
+
+Description: This dataset has information Brazilian zip codes and its lat/lng coordinates. Use it to plot maps and find distances between sellers and customers.
 
 Grain: one row per geolocation observation by zip code prefix.
 
@@ -51,6 +55,8 @@ Quality note: this dataset contains many duplicate rows and multiple coordinates
 ## Orders
 
 File: `data/raw/olist_orders_dataset.csv`
+
+Description: This is the core dataset. From each order you might find all other information.
 
 Grain: one row per order.
 
@@ -79,6 +85,8 @@ Derived fields:
 
 File: `data/raw/olist_order_items_dataset.csv`
 
+Description: This dataset includes data about the items purchased within each order. Example: The order_id = 00143d0f86d6fbd9f9b38ab440ac16f5 has 3 items (same product). Each item has the freight calculated accordingly to its measures and weight. To get the total freight value for each order you just have to sum.
+
 Grain: one row per item within an order.
 
 | Column | Type | Description | Nullable | Key / Usage |
@@ -102,6 +110,8 @@ Derived fields:
 
 File: `data/raw/olist_order_payments_dataset.csv`
 
+Description: This dataset includes data about the orders payment options.
+
 Grain: one row per payment event for an order.
 
 | Column | Type | Description | Nullable | Key / Usage |
@@ -117,6 +127,8 @@ Transformation note: aggregate payments to order level before joining to `orders
 ## Order Reviews
 
 File: `data/raw/olist_order_reviews_dataset.csv`
+
+Description: This dataset includes data about the reviews made by the customers. After a customer purchases the product from Olist Store a seller gets notified to fulfill that order. Once the customer receives the product, or the estimated delivery date is due, the customer gets a satisfaction survey by email where he can give a note for the purchase experience and write down some comments.
 
 Grain: one row per review.
 
@@ -142,6 +154,8 @@ Derived fields:
 ## Products
 
 File: `data/raw/olist_products_dataset.csv`
+
+Description: This dataset includes data about the products sold by Olist.
 
 Grain: one row per product.
 
@@ -175,6 +189,8 @@ Derived fields:
 
 File: `data/raw/olist_sellers_dataset.csv`
 
+Description: This dataset includes data about the sellers that fulfilled orders made at Olist. Use it to find the seller location and to identify which seller fulfilled each product.  
+
 Grain: one row per seller.
 
 | Column | Type | Description | Nullable | Key / Usage |
@@ -187,6 +203,8 @@ Grain: one row per seller.
 ## Category Translation
 
 File: `data/raw/product_category_name_translation.csv`
+
+Description: Translates the product_category_name to english.
 
 Grain: one row per product category.
 

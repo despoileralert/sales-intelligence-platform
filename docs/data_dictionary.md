@@ -213,7 +213,7 @@ Grain: one row per product category.
 | `product_category_name` | string | Product category in Portuguese. | No | Primary key; joins to `products.product_category_name`. |
 | `product_category_name_english` | string | English category name. | No | Preferred reporting label. |
 
-## Recommended Analytics Layer
+## Analytics Layer and Database Schema
 
 ### `dim_customer`
 

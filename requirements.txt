@@ -14,5 +14,4 @@ xgboost>=3.0.0
 lightgbm>=4.6.0
 shap>=0.48.0
 mysql-connector-python
-airflow
-
+apache-airflow

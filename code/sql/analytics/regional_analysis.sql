@@ -96,8 +96,7 @@ INNER JOIN dim_customer c
     ON fo.customer_unique_id = c.customer_unique_id
 WHERE fo.order_delivered_customer_date IS NOT NULL
 GROUP BY s.seller_state, c.customer_state
-ORDER BY orders DESC
-LIMIT 30;
+ORDER BY orders DESC;
 
 -- ---------------------------------------------------------------------------
 -- 4. Same-state vs. different-state delivery performance (summary)

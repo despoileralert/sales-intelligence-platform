@@ -94,8 +94,7 @@ FROM fact_order fo
 INNER JOIN dim_customer c
     ON fo.customer_unique_id = c.customer_unique_id
 GROUP BY c.customer_state, c.customer_city
-ORDER BY orders DESC
-LIMIT 20;
+ORDER BY orders DESC;
 
 -- ---------------------------------------------------------------------------
 -- 6. Customer order frequency distribution
@@ -108,7 +107,7 @@ SELECT
     COUNT(*) AS customers
 FROM dim_customer
 GROUP BY total_orders
-ORDER BY total_orders;
+ORDER BY total_orders;  
 
 -- ---------------------------------------------------------------------------
 -- 7. Average customer lifetime value (paid revenue per customer)
@@ -123,5 +122,4 @@ FROM dim_customer c
 INNER JOIN fact_order fo
     ON c.customer_unique_id = fo.customer_unique_id
 GROUP BY c.customer_unique_id, c.total_orders
-ORDER BY lifetime_revenue DESC
-LIMIT 20;
+ORDER BY lifetime_revenue DESC;

@@ -1,11 +1,9 @@
 import logging
 from pathlib import Path
 
-
 """
 Logger function
 """
-
 def get_logger(name: str) -> logging.Logger:
     logger = logging.getLogger(name)
 
@@ -31,7 +29,6 @@ def get_logger(name: str) -> logging.Logger:
     logger.addHandler(file_handler)
 
     return logger
-
 
 
 """

@@ -1,8 +1,0 @@
-{
-    "python-envs.defaultEnvManager": "ms-python.python:system",
-    "editor.semanticHighlighting.enabled": true,
-    "python.languageServer": "Pylance",
-    "editor.tokenColorCustomizations": {"enabled": true,
-    "rules": {
-        "variable": "#d19a66"}},
-    }

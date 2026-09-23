@@ -5,4 +5,10 @@
 .env
 .env.*
 
-**/.vscode/
+.vscode/
+.agents/
+
+.env
+
+data/
+data/raw

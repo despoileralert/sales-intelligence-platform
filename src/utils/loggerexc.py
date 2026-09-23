@@ -49,19 +49,3 @@ class SalesIntelError(Exception):
         if self.details:
             return f"{self.message} | Details: {self.details}"
         return self.message
-
-
-class DataIngestionError(SalesIntelError):
-    """Raised when raw data ingestion fails."""
-
-
-class DataValidationError(SalesIntelError):
-    """Raised when input data is invalid or incomplete."""
-
-
-class TransformationError(SalesIntelError):
-    """Raised when feature engineering or transformation fails."""
-
-
-class DatabaseError(SalesIntelError):
-    """Raised when database operations fail."""

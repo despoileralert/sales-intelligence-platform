@@ -13,5 +13,7 @@ scikit-learn>=1.7.0
 xgboost>=3.0.0
 lightgbm>=4.6.0
 shap>=0.48.0
-mysql-connector-python
+# 9.2.0 replaced cursor.execute(multi=True) with native multi-statement
+# execution; helpers.py uses the new API.
+mysql-connector-python>=9.2.0
 apache-airflow

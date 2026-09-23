@@ -8,44 +8,52 @@ load_dotenv()
 
 class MySqlManager:
     def __init__(self):
+        # No "database" here: schema.sql creates sales_intelligence and runs
+        # USE on the same connection, so the first run works on an empty server.
         self.config = {
-            "host": os.getenv('DB_HOST'),
-            "port": os.getenv('DB_PORT'),
-            "user": os.getenv('DB_USER'),
-            "password": os.getenv('DB_PASSWORD'),
-            "database": os.getenv('DB_SCHEMA')
+            "host": os.getenv("DB_HOST", "127.0.0.1"),
+            "port": int(os.getenv("DB_PORT", "3306")),
+            "user": os.getenv("DB_USER"),
+            "password": os.getenv("DB_PASSWORD"),
         }
         self.attempts = 3
         self.delay = 2
         self.logger = get_logger("mysqlLogger")
 
 
-    def connect_to_mysql(self):    
-        attempt = 1
-        # Implement a reconnection routine
-        while attempt < self.attempts + 1:
+    def connect_to_mysql(self):
+        # Reconnection routine with a progressive delay between attempts
+        for attempt in range(1, self.attempts + 1):
             try:
-                return mysql.connector.connect(**self.config, allow_local_infile = True)
+                return mysql.connector.connect(**self.config, allow_local_infile=True)
             except (mysql.connector.Error, IOError) as err:
-                if (self.attempts is attempt):
-                    # Attempts to reconnect failed; returning None
-                    self.logger.info("Failed to connect, exiting without a connection: %s", err)
+                if attempt == self.attempts:
+                    self.logger.error("Failed to connect after %d attempts: %s", self.attempts, err)
                     return None
-                self.logger.info(
+                self.logger.warning(
                     "Connection failed: %s. Retrying (%d/%d)...",
                     err,
                     attempt,
-                    self.attempts-1,
+                    self.attempts - 1,
                 )
-                # progressive reconnect delay
                 time.sleep(self.delay ** attempt)
-                attempt += 1
         return None
 
 
-    def execute_sql_file(self, conn, filepath: Path, logger, capture_results: bool = False):
+    def execute_sql_file(
+        self,
+        conn,
+        filepath: Path,
+        logger,
+        capture_results: bool = False,
+        replacements: dict | None = None,
+    ):
         """
         Execute a multi-statement SQL file using an open connection.
+
+        replacements: optional {placeholder: value} map applied to the SQL text
+                      before execution, e.g. {"{RAW_DATA_DIR}": "C:/data/raw"}.
+
         Returns a list of result-sets if capture_results=True, else True on success.
         """
         if not filepath.exists():
@@ -56,18 +64,28 @@ class MySqlManager:
             self.logger.warning(f"Empty SQL file: {filepath}")
             return [] if capture_results else True
 
+        for placeholder, value in (replacements or {}).items():
+            sql = sql.replace(placeholder, value)
+
         self.logger.info(f"Executing: {filepath.name} ({filepath})")
 
         results = []
         try:
             with conn.cursor() as cursor:
-                # multi=True is required for files with more than one statement.
-                # We must iterate every result to clear the protocol state.
-                for result in cursor.execute(sql, multi=True):
-                    if result.with_rows and capture_results:
-                        results.append(result.fetchall())
-                    # INSERT / LOAD / DDL statements yield no rows and are
-                    # consumed by the iterator but not captured.
+                # mysql-connector-python 9.2+ runs multi-statement strings
+                # natively (the old multi=True flag was removed). Walk every
+                # result with nextset(): rows must be fetched to keep the
+                # protocol in sync, and errors in later statements surface here.
+                cursor.execute(sql)
+                while True:
+                    if cursor.with_rows:
+                        rows = cursor.fetchall()
+                        if capture_results:
+                            results.append(rows)
+                    # INSERT / LOAD / DDL statements return no rows and are
+                    # skipped, so captured results line up with SELECTs only.
+                    if not cursor.nextset():
+                        break
 
             conn.commit()
             self.logger.info(f"Success: {filepath.name}")
@@ -106,8 +124,8 @@ class MySqlManager:
                     passed = False
                 else:
                     self.logger.info(f"  PASS: {check_name}")
-        return passed   
-    
+        return passed
+
 
     def log_transform_summary(self, results, logger):
         """

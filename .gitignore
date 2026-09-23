@@ -1,14 +1,14 @@
 # Python virtual environment
 .venv/
 
-# Environment variable files
+# Environment variable files (keep the template)
 .env
 .env.*
+!.env.example
 
 .vscode/
 .agents/
 
-.env
-
+# Data and pipeline logs
 data/
-data/raw
+logs/

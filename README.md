@@ -1,4 +1,4 @@
-# Sales Intelligence Platform — Olist E-Commerce
+# Sales Intelligence Platform: Olist E-Commerce
 
 An end-to-end analytics project built on the [Olist Brazilian E-Commerce Public Dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce). Raw CSV exports are loaded into MySQL, validated, and transformed into a star schema that powers SQL analysis and a BI dashboard covering revenue, customers, delivery operations, and customer satisfaction.
 
